@@ -267,7 +267,7 @@ function generateLabel(index) {
     }
 }
 
-        function shuffleSeeds() {
+        async function shuffleSeeds() {
             password = document.getElementById("password").value;
             if (!password || password.length > 10) {
                 alert("A senha deve ter menos de 10 caracteres.");
@@ -275,11 +275,15 @@ function generateLabel(index) {
             }
             password = "0".repeat(10 - password.length) + password;
 
-            let shuffledSeeds = [...seeds];
-            let hash = Array.from(password).reduce((hash, char) => hash + char.charCodeAt(0), 0);
+            const encoder = new TextEncoder();
+            const data = encoder.encode(password);
+            const hashBuffer = await crypto.subtle.digest("SHA-256", data);
+            const hashArray = Array.from(new Uint8Array(hashBuffer));
 
+            let shuffledSeeds = [...seeds];
             for (let i = shuffledSeeds.length - 1; i > 0; i--) {
-                let j = (hash + i) % shuffledSeeds.length;
+                const hashByte = hashArray[i % hashArray.length];
+                let j = (hashByte + i) % shuffledSeeds.length;
                 [shuffledSeeds[i], shuffledSeeds[j]] = [shuffledSeeds[j], shuffledSeeds[i]];
             }
 
