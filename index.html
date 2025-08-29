@@ -3,7 +3,7 @@
 <html lang="pt-br"><script src="chrome-extension://bofddndhbegljegmpmnlbhcejofmjgbn/app/script/inpage.js"></script><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Seeds do Bitcoin com Senha</title>
+    <title>Lock your seeds with an password</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -24,10 +24,10 @@
     </style>
 <meta id="dcngeagmmhegagicpcmpinaoklddcgon"></head>
 <body>
-    <h1>Seeds do Bitcoin com Senha</h1>
-    <input type="password" id="password" maxlength="10" placeholder="Digite a senha de 10 caracteres">
-    <button onclick="shuffleSeeds()">Embaralhar</button>
-    <button onclick="window.print()">Imprimir</button>
+    <h1>Lock your seeds with an password (BP39 word list)</h1>
+    <input type="password" id="password" maxlength="10" placeholder="Password of max 10char">
+    <button onclick="shuffleSeeds()">Lock!</button>
+    <button onclick="window.print()">Print</button>
     <table id="seedsTable">
         <thead>
             <tr id="headerRow"><th>Label</th><th>Seed</th><th>Label</th><th>Seed</th><th>Label</th><th>Seed</th><th>Label</th><th>Seed</th><th>Label</th><th>Seed</th><th>Label</th><th>Seed</th><th>Label</th><th>Seed</th><th>Label</th><th>Seed</th><th>Label</th><th>Seed</th><th>Label</th><th>Seed</th></tr>
@@ -270,10 +270,9 @@ function generateLabel(index) {
         async function shuffleSeeds() {
             password = document.getElementById("password").value;
             if (!password || password.length > 10) {
-                alert("A senha deve ter menos de 10 caracteres.");
+                alert("Password must be max of 10 char.");
                 return;
             }
-            password = "0".repeat(10 - password.length) + password;
 
             const encoder = new TextEncoder();
             const data = encoder.encode(password);
@@ -283,7 +282,7 @@ function generateLabel(index) {
             let shuffledSeeds = [...seeds];
             for (let i = shuffledSeeds.length - 1; i > 0; i--) {
                 const hashByte = hashArray[i % hashArray.length];
-                let j = (hashByte + i) % shuffledSeeds.length;
+                let j = hashByte % (i + 1);
                 [shuffledSeeds[i], shuffledSeeds[j]] = [shuffledSeeds[j], shuffledSeeds[i]];
             }
 
